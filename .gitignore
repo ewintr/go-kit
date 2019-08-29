@@ -1,0 +1,4 @@
+.DS_Store
+debug.*
+coverage/coverage.*
+coverage/*cover.out
