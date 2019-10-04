@@ -63,4 +63,43 @@ func TestLogContext(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("attach error", func(t *testing.T) {
+
+		var (
+			errOne = fmt.Errorf("error one")
+			errTwo = fmt.Errorf("error two")
+		)
+
+		for _, tc := range []struct {
+			m    string
+			errs []error
+			err  error
+		}{
+			{
+				m:    "single call",
+				errs: []error{errOne},
+				err:  errOne,
+			},
+			{
+				m:    "multiple calls overwrite",
+				errs: []error{errOne, errTwo},
+				err:  errTwo,
+			},
+		} {
+			t.Run(tc.m, func(t *testing.T) {
+				var buff bytes.Buffer
+				logger := log.NewLogger(&buff)
+
+				currentLogger := logger
+				for _, err := range tc.errs {
+					currentLogger = log.AttachError(currentLogger, err)
+				}
+				currentLogger.Info("something")
+
+				test.Includes(t,
+					fmt.Sprintf("\"attached_error\":%q", tc.err.Error()), buff.String())
+			})
+		}
+	})
 }

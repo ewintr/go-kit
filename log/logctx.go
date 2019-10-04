@@ -35,3 +35,9 @@ func Add(l Logger, cc ...Contexter) Logger {
 	}
 	return l
 }
+
+// AttachError adds a context called `attached_error` for error message that
+// is relevant to the log entry.
+func AttachError(l Logger, e error) Logger {
+	return l.AddContext("attached_error", e.Error())
+}
