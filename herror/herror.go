@@ -103,8 +103,14 @@ func (e *Err) Stack() *Stacktrace {
 	return e.stack
 }
 
-// AddDetails records variable info to the error mostly for debugging purposes
+// AddDetails is a alias for AppendDetail [DEPRECATED]
 func (e *Err) AddDetails(v ...interface{}) *Err {
+	return e.AppendDetails(v...)
+}
+
+// AppendDetails appends formated variable information at the end of a text
+// field in the error mostly for debugging purposes.
+func (e *Err) AppendDetails(v ...interface{}) *Err {
 	buff := new(bytes.Buffer)
 	fmt.Fprintln(buff, e.details)
 	spew.Fdump(buff, v...)
