@@ -1,3 +1,3 @@
-# KIT [![pipeline status](https://dev-git.sentia.com/go/kit/badges/master/pipeline.svg)](https://dev-git.sentia.com/go/kit/commits/master) [![coverage report](https://dev-git.sentia.com/go/kit/badges/master/coverage.svg)](https://dev-git.sentia.com/go/kit/commits/master)
+# Go-Kit 
 
-Bundle with most used packages for development.
+Bundle with packages that aid Go development. Created together with my respected colleague at [https://sentia.com/](Sentia): [https://github.com/vhugo](Victor Alves).
