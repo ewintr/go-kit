@@ -4,8 +4,8 @@ import (
 	"runtime"
 	"testing"
 
-	"dev-git.sentia.com/go/kit/herror"
-	"dev-git.sentia.com/go/kit/test"
+	"git.sr.ht/~ewintr/go-kit/herror"
+	"git.sr.ht/~ewintr/go-kit/test"
 )
 
 func trace() *herror.Stacktrace {
@@ -36,7 +36,7 @@ func TestStacktrace(t *testing.T) {
 		test.Equals(t, len(expectedFrames), len(stack.Frames))
 		for i, frame := range expectedFrames {
 			test.Equals(t, frame.Function, stack.Frames[i].Function)
-			test.Equals(t, "dev-git.sentia.com/go/kit/herror_test", stack.Frames[i].Package)
+			test.Equals(t, "git.sr.ht/~ewintr/go-kit/herror_test", stack.Frames[i].Package)
 			test.Equals(t, "stacktrace_test.go", stack.Frames[i].Filename)
 		}
 	})
@@ -102,7 +102,7 @@ func TestStacktrace(t *testing.T) {
 
 				for i, frame := range tc.expected {
 					test.Equals(t, frame.Function, stack.Frames[i].Function)
-					test.Equals(t, "dev-git.sentia.com/go/kit/herror_test", stack.Frames[i].Package)
+					test.Equals(t, "git.sr.ht/~ewintr/go-kit/herror_test", stack.Frames[i].Package)
 					test.Equals(t, "stacktrace_test.go", stack.Frames[i].Filename)
 				}
 			})

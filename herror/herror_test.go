@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"dev-git.sentia.com/go/kit/herror"
-	"dev-git.sentia.com/go/kit/test"
+	"git.sr.ht/~ewintr/go-kit/herror"
+	"git.sr.ht/~ewintr/go-kit/test"
 )
 
 func TestHError(t *testing.T) {

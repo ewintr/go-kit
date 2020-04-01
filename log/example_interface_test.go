@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"dev-git.sentia.com/go/kit/log"
+	"git.sr.ht/~ewintr/go-kit/log"
 )
 
 // LoggerTestable represents a data structure for a log context

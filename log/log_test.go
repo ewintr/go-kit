@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"dev-git.sentia.com/go/kit/log"
-	"dev-git.sentia.com/go/kit/test"
+	"git.sr.ht/~ewintr/go-kit/log"
+	"git.sr.ht/~ewintr/go-kit/test"
 )
 
 func TestNewWriter(t *testing.T) {

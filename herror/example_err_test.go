@@ -3,7 +3,7 @@ package herror_test
 import (
 	"fmt"
 
-	"dev-git.sentia.com/go/kit/herror"
+	"git.sr.ht/~ewintr/go-kit/herror"
 )
 
 var ErrTaskFailed = herror.New("task has failed")
