@@ -15,7 +15,7 @@ type MockResponse struct {
 }
 
 type MockServerProcedure struct {
-	URL        string
+	URI        string
 	HTTPMethod string
 	Response   MockResponse
 }
@@ -157,7 +157,7 @@ func NewMockServer(rec MockRecorder, procedures ...MockServerProcedure) *httptes
 
 			for _, proc := range procedures {
 
-				if proc.URL == r.URL.RequestURI() && proc.HTTPMethod == r.Method {
+				if proc.URI == r.URL.RequestURI() && proc.HTTPMethod == r.Method {
 
 					headers := w.Header()
 					for hkey, hvalue := range proc.Response.Headers {

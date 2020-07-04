@@ -17,21 +17,21 @@ func TestHTTPMock(t *testing.T) {
 
 	procs := []test.MockServerProcedure{
 		test.MockServerProcedure{
-			URL:        "/",
+			URI:        "/",
 			HTTPMethod: "GET",
 			Response: test.MockResponse{
 				Body: []byte("getRoot"),
 			},
 		},
 		test.MockServerProcedure{
-			URL:        "/",
+			URI:        "/",
 			HTTPMethod: "POST",
 			Response: test.MockResponse{
 				Body: []byte("postRoot"),
 			},
 		},
 		test.MockServerProcedure{
-			URL:        "/get/header",
+			URI:        "/get/header",
 			HTTPMethod: "GET",
 			Response: test.MockResponse{
 				StatusCode: http.StatusAccepted,
@@ -42,21 +42,21 @@ func TestHTTPMock(t *testing.T) {
 			},
 		},
 		test.MockServerProcedure{
-			URL:        "/get/auth",
+			URI:        "/get/auth",
 			HTTPMethod: "GET",
 			Response: test.MockResponse{
 				Body: []byte("getRootAuth"),
 			},
 		},
 		test.MockServerProcedure{
-			URL:        "/my_account",
+			URI:        "/my_account",
 			HTTPMethod: "GET",
 			Response: test.MockResponse{
 				Body: []byte("getAccount"),
 			},
 		},
 		test.MockServerProcedure{
-			URL:        "/my_account.json",
+			URI:        "/my_account.json",
 			HTTPMethod: "GET",
 			Response: test.MockResponse{
 				Body: []byte("getAccountJSON"),
@@ -240,7 +240,7 @@ func ExampleMockAssertion_Hits() {
 	uri := "/"
 
 	server := test.NewMockServer(&record, test.MockServerProcedure{
-		URL:        uri,
+		URI:        uri,
 		HTTPMethod: http.MethodGet,
 	})
 
@@ -255,7 +255,7 @@ func ExampleMockAssertion_Headers() {
 	uri := "/"
 
 	server := test.NewMockServer(&record, test.MockServerProcedure{
-		URL:        uri,
+		URI:        uri,
 		HTTPMethod: http.MethodPost,
 	})
 
@@ -270,7 +270,7 @@ func ExampleMockAssertion_Body() {
 	uri := "/"
 
 	server := test.NewMockServer(&record, test.MockServerProcedure{
-		URL:        uri,
+		URI:        uri,
 		HTTPMethod: http.MethodPost,
 	})
 
