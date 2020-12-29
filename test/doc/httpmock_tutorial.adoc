@@ -223,7 +223,7 @@ Now we come to the interesting part: the recording of our requests. In the code 
 
 The nice thing about interfaces is that you can implement them exactly the way you want for the case at hand. This is especially useful in testing, because different situations ask for different checks. However, the go-kit test package has a straightforward implementation called `MockAssertion` and it turns out that that implementation is already enough for 90% of the cases. You milage may vary, of course.
 
-It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code in `test/httpmock.go` in the https://git.sr.ht/~ewintr/go-kit[go-kit] repository. For now, let's keep it at these observations:
+It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code in `test/httpmock.go` in the mentioned https://git.sr.ht/~ewintr/go-kit[go-kit] repository. For now, let's keep it at these observations:
 
 ----
 // recordedRequest represents recorded structured information about each request
