@@ -1,8 +1,8 @@
 = Unit Test Outbound HTTP Requests in Golang
 Erik Winter <ik@erikwinter.nl>
 2020-07-04
-:kind:article
-:tags:golang, tdd, http, rest
+:kind: tutorial
+:tags: golang, tdd, http, rest
 
 In general, when one wants to test the interaction of multiple services and systems, one tries to set up an integration test. This often involves spinning up some Docker containers and a docker-compose file that orchestrates the dependencies between them and starts the integration test suite. In other words, this can be a lot of work.
 
@@ -223,7 +223,7 @@ Now we come to the interesting part: the recording of our requests. In the code 
 
 The nice thing about interfaces is that you can implement them exactly the way you want for the case at hand. This is especially useful in testing, because different situations ask for different checks. However, the go-kit test package has a straightforward implementation called `MockAssertion` and it turns out that that implementation is already enough for 90% of the cases. You milage may vary, of course.
 
-It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code https://git.sr.ht/~ewintr/go-kit/tree/master/test/httpmock.go#L29[here]. For now, let's keep it at these observations:
+It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code https://git.sr.ht/~ewintr/go-kit/tree/master/item/test/httpmock.go#L37[here]. For now, let's keep it at these observations:
 
 ----
 // recordedRequest represents recorded structured information about each request
@@ -292,6 +292,6 @@ Then, add the following statements at the end of our test function body:
 
 That's it! We now have tested each and every requirement that was listed above. Congratulations.
 
-I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in https://git.sr.ht/~ewintr/go-kit/test/httpmock_example/[here].
+I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in https://git.sr.ht/~ewintr/go-kit/tree/master/item/test/doc[here].
 
 If you have comments, please let me know. Contact methods are listed on the /about/[About page].
