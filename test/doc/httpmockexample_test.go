@@ -1,4 +1,4 @@
-package httpmock_test
+package doc_test
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"git.sr.ht/~ewintr/go-kit/test"
-	httpmock "git.sr.ht/~ewintr/go-kit/test/httpmock_example"
+	httpmock "git.sr.ht/~ewintr/go-kit/test/doc"
 )
 
 func TestFooClientDoStuff(t *testing.T) {
