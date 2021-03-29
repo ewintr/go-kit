@@ -140,11 +140,11 @@ mockServer := NewMockServer(nil, MockServerProcedure{
     URI:        "/path",
     HTTPMethod: http.MethodGet,
     Response:   MockResponse{
-    StatusCode: http.StatusOK,
-    Body:       []byte(`First page`),
+      StatusCode: http.StatusOK,
+      Body:       []byte(`First page`),
+    },
   },
-},
-// define more if needed
+  // define more if needed
 )
 ----
 
