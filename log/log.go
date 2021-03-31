@@ -23,5 +23,5 @@ type Logger interface {
 }
 
 func New(out io.Writer) Logger {
-	return NewLogrusLogger(out)
+	return NewGoKitIOLogger(out)
 }
