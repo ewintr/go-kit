@@ -292,6 +292,6 @@ Then, add the following statements at the end of our test function body:
 
 That's it! We now have tested each and every requirement that was listed above. Congratulations.
 
-I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in https://git.sr.ht/~ewintr/go-kit/tree/master/item/test/doc[here].
+I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in the doc folder of https://git.sr.ht/~ewintr/go-kit/[this repository].
 
 If you have comments, please let me know. Contact methods are listed on the /about/[About page].
