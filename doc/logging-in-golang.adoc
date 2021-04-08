@@ -1,6 +1,6 @@
 = My Take on Logging in Golang
 Erik Winter <ik@erikwinter.nl>
-2021-04-01
+2021-04-08
 :kind: tutorial
 :language: en
 :tags: golang
