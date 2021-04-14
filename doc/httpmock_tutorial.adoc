@@ -2,6 +2,8 @@
 Erik Winter <ik@erikwinter.nl>
 2020-07-04
 :kind: tutorial
+:public: yes
+:language: en
 :tags: golang, tdd, http, rest
 
 In general, when one wants to test the interaction of multiple services and systems, one tries to set up an integration test. This often involves spinning up some Docker containers and a docker-compose file that orchestrates the dependencies between them and starts the integration test suite. In other words, this can be a lot of work.
