@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"testing"
 
-	"git.sr.ht/~ewintr/go-kit/test"
-	httpmock "git.sr.ht/~ewintr/go-kit/test/doc"
+	httpmock "git.ewintr.nl/go-kit/doc"
+	"git.ewintr.nl/go-kit/test"
 )
 
 func TestFooClientDoStuff(t *testing.T) {

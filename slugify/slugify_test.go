@@ -3,7 +3,7 @@ package slugify_test
 import (
 	"testing"
 
-	"git.sr.ht/~ewintr/go-kit/slugify"
+	"git.ewintr.nl/go-kit/slugify"
 )
 
 var tests = []struct{ in, out string }{

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"git.sr.ht/~ewintr/go-kit/log"
-	"git.sr.ht/~ewintr/go-kit/test"
+	"git.ewintr.nl/go-kit/log"
+	"git.ewintr.nl/go-kit/test"
 )
 
 func TestGoKitIOLogger(t *testing.T) {

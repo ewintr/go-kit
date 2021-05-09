@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"git.sr.ht/~ewintr/go-kit/test"
+	"git.ewintr.nl/go-kit/test"
 )
 
 func TestTest(t *testing.T) {
