@@ -71,7 +71,7 @@ func (kl *GoKitIOLogger) Error(message string) {
 }
 
 func (kl *GoKitIOLogger) log(message string) {
-	kv := make([]interface{}, len(kl.fields)*2)
+	kv := make([]interface{}, 0)
 	for k, v := range kl.fields {
 		kv = append(kv, k, v)
 	}
