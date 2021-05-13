@@ -57,26 +57,26 @@ func (kl *GoKitIOLogger) With(fields Fields) Logger {
 
 func (kl *GoKitIOLogger) Debug(message string) {
 	if kl.level == LevelDebug {
-		kl.log(message)
+		kl.log("debug", message)
 	}
 }
 
 func (kl *GoKitIOLogger) Info(message string) {
 	if kl.level != LevelError {
-		kl.log(message)
+		kl.log("info", message)
 	}
 }
 
 func (kl *GoKitIOLogger) Error(message string) {
-	kl.log(message)
+	kl.log("error", message)
 }
 
-func (kl *GoKitIOLogger) log(message string) {
+func (kl *GoKitIOLogger) log(level, message string) {
 	kv := make([]interface{}, 0)
 	for k, v := range kl.fields {
 		kv = append(kv, k, v)
 	}
-	kv = append(kv, "level", kl.level, "message", message)
+	kv = append(kv, "level", level, "message", message)
 
 	kl.logger.Log(kv...)
 }
