@@ -14,6 +14,7 @@ type GoKitIOLogger struct {
 
 func NewGoKitIOLogger(out io.Writer) Logger {
 	kl := kitlog.NewJSONLogger(out)
+	kl = kitlog.With(kl, "time", kitlog.DefaultTimestampUTC)
 
 	return &GoKitIOLogger{
 		fields: make(Fields),
