@@ -1,0 +1,299 @@
+= Unit Test Outbound HTTP Requests in Golang
+Erik Winter <ik@erikwinter.nl>
+2020-07-04
+:kind: tutorial
+:public: yes
+:language: en
+:tags: golang, tdd, http, rest, go-kit
+
+In general, when one wants to test the interaction of multiple services and systems, one tries to set up an integration test. This often involves spinning up some Docker containers and a docker-compose file that orchestrates the dependencies between them and starts the integration test suite. In other words, this can be a lot of work.
+
+Sometimes that is too much for the case at hand, but you still want to check that the outbound HTTP requests of your program are ok. Does it send the right body and the right headers? Does it do authentication? In a world where the main job of a lot of services is to talk to other services, this is important.
+
+Luckily, it is possible to test this without all that Docker work. The standard library in Golang already provides a mock server for testing purposes: `httptest.NewServer` will give you one. It is designed to give mock responses to HTTP requests, for use in your tests. You can set it to respond with valid and invalid responses, so you can check that your code is able to handle all possible variations. After all, external services are unreliable and your app must be prepared for that. 
+
+This is good. But with a bit of extra code, we can extend these mocks and test the outbound requests as well.
+
+To demonstrate this, let's look at a simple generic client for the Foo Cloud Service (tm). We'll examine the following parts:
+
+* #the-code-we-want-to-test[The code we want to test]
+* #setting-up-the-mock-server[Setting up the mock server]
+* #writing-the-tests[Writing the tests]
+* #checking-the-outbound-requests[Checking the outbound requests]
+
+_Note: If you're the type of reader that likes code better than words, skip this explanation and go directly to the `test/doc` folder in https://git.sr.ht/~ewintr/go-kit/[this repository] that contains a complete working example of everything discussed below._
+
+== The Code We Want to Test
+
+We're not particularly interested in the specific implementation of `FooClient` right now. Let's try some TDD first. This is the functionality that we want in our code:
+
+----
+type FooClient struct {
+  ...
+}
+
+func NewFooClient(url, username, password string) *FooClient{
+  ...
+}
+
+func (fc *FooClient) DoStuff(param string) (string, error) {
+  ...
+}
+----
+
+And furthermore we have the requirements that:
+
+* When `DoStuff` is called, a request is send out to the given url, extended with path `/path`.
+* The request has a JSON body with a field `param` and the value that was passed to the function.
+* The request contains the corresponding JSON headers.
+* The request contains an authentication header that does basic authentication with the username and password.
+* A succesful response will have status `200` and a JSON body with the field `result`. The value of this field is what we want to return from the method.
+
+This is all very standard. I'm sure you've seen this type of code before. Let's move on!
+
+== Setting up the Mock Server
+
+So how do we set up our mock server?
+
+To do so, first we need some types:
+
+----
+// MockResponse represents a response for the mock server to serve
+type MockResponse struct {
+  StatusCode int
+  Headers    http.Header
+  Body       []byte
+}
+
+// MockServerProcedure ties a mock response to a url and a method
+type MockServerProcedure struct {
+  URI        string
+  HTTPMethod string
+  Response   MockResponse
+}
+----
+
+These types are just a convenient way to tell the mock server to what requests we want it to respond and what to respond with.
+
+But there is more. We would also like to store the requests that our code makes for later inspection. That is, we want to use something that can record the requests. Let's go for a `Recorder` interface with a method `Record`:
+
+----
+// MockRecorder provides a way to record request information from every successful request.
+type MockRecorder interface {
+  Record(r *http.Request)
+}
+----
+
+Then we get to the actual mock server. Note that for the most part, it just builds on the mock server from the standard `httptest` package:
+
+----
+// NewMockServer return a mock HTTP server to test requests
+func NewMockServer(rec Mockrecorder, procedures ...MockServerProcedure) *httptest.Server {
+  var handler http.Handler
+
+  handler = http.HandlerFunc(
+    func(w http.ResponseWriter, r *http.Request) {
+
+      for _, proc := range procedures {
+
+        if proc.URI == r.URL.RequestURI() && proc.HTTPMethod == r.Method {
+
+          headers := w.Header()
+          for hkey, hvalue := range proc.Response.Headers {
+            headers[hkey] = hvalue
+          }
+
+          code := proc.Response.StatusCode
+          if code == 0 {
+            code = http.StatusOK
+          }
+
+          w.WriteHeader(code)
+          w.Write(proc.Response.Body)
+
+          if rec != nil {
+            rec.Record(r)
+          }
+
+          return
+        }
+      }
+
+      w.WriteHeader(http.StatusNotFound)
+      return
+    })
+
+  return httptest.NewServer(handler)
+}
+----
+
+This function returns a `*httptest.Server` with exactly one handler function. That handler function simply loops through all the given mock server procedures, checks whether the path and the HTTP method match with the request and if so, returns the specified mock response, with status code, headers and response body as configured.
+
+On a succesful match and return, it records the request that was made through our `Recorder` interface. If there was no match, a `http.StatusNotFound` is returned.
+
+That's all.
+
+== Writing the Tests
+
+How would we use this mock server in a test? We can, for instance, create one like this:
+
+----
+mockServer := NewMockServer(nil, MockServerProcedure{
+    URI:        "/path",
+    HTTPMethod: http.MethodGet,
+    Response:   MockResponse{
+      StatusCode: http.StatusOK,
+      Body:       []byte(`First page`),
+    },
+  },
+  // define more if needed
+)
+----
+
+And use it as follows:
+
+----
+func TestFooClientDoStuff(t *testing.T) {
+  path := "/path"
+  username := "username"
+  password := "password"
+
+  for _, tc := range []struct {
+    name      string
+    param     string
+    respCode  int
+    respBody  string
+    expErr    error
+    expResult string
+  }{
+    {
+      name:     "upstream failure",
+      respCode: http.StatusInternalServerError,
+      expErr:   httpmock.ErrUpstreamFailure,
+    },
+    {
+      name:      "valid response to bar",
+      param:     "bar",
+      respCode:  http.StatusOK,
+      respBody:  `{"result":"ok"}`,
+      expResult: "ok",
+    },
+    {
+      name:      "valid response to baz",
+      param:     "baz",
+      respCode:  http.StatusOK,
+      respBody:  `{"result":"also ok"}`,
+      expResult: "also ok",
+    },
+
+    ...
+
+  } {
+    t.Run(tc.name, func(t *testing.T) {
+      mockServer := test.NewMockServer(nil, test.MockServerProcedure{
+        URI:        path,
+        HTTPMethod: http.MethodPost,
+        Response: test.MockResponse{
+          StatusCode: tc.respCode,
+          Body:       []byte(tc.respBody),
+        },
+      })
+
+      client := httpmock.NewFooClient(mockServer.URL, username, password)
+
+      actResult, actErr := client.DoStuff(tc.param)
+
+      // check result
+      test.Equals(t, true, errors.Is(actErr, tc.expErr))
+      test.Equals(t, tc.expResult, actResult)
+    })
+  }
+}
+----
+
+_Note: the `test.Equals` are part of the small test package in https://git.sr.ht/~ewintr/go-kit[this go-kit]. The discussed http mock also belongs to that package and together they form a minimal, but sufficient set of test helpers. But if you prefer, you can of course combine this with populair libraries like https://pkg.go.dev/github.com/stretchr/testify/assert?tab=doc[testify]._
+
+We've set up a regular table driven test for calling `FooClient.DoStuff`. In the table we have three test cases. One pretends the external server is down en responds with an error status code. The other two mimick a working external server and test two possible inputs, with `param` `"bar`" and `param` `"baz"`.
+
+This is just the simple version. It is not shown here, but we can also check different errors with the response body. What if we would set it to `[]byte("{what?")`. Would our code be able to handle that?
+
+Also, because `NewMockServer` is a variadic function, we can pass in more mock procedures and test more complex scenario's. What if we need to login on a separate endpoint before we can make the request for `DoStuff`? Just add a mock for the login and check that it is called. And remember that the real server might not return the things you expect it to return, so test a failing login too.
+
+== Checking the Outbound Requests
+
+Now we come to the interesting part: the recording of our requests. In the code above we conveniantly ignored the first argument in `NewMockServer`. But it was this `Recorder` that caused us to set all this up in the first place. 
+
+The nice thing about interfaces is that you can implement them exactly the way you want for the case at hand. This is especially useful in testing, because different situations ask for different checks. However, the go-kit test package has a straightforward implementation called `MockAssertion` and it turns out that that implementation is already enough for 90% of the cases. You milage may vary, of course.
+
+It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code in `test/httpmock.go` in the mentioned https://git.sr.ht/~ewintr/go-kit[go-kit] repository. For now, let's keep it at these observations:
+
+----
+// recordedRequest represents recorded structured information about each request
+type recordedRequest struct {
+  hits     int
+  requests []*http.Request
+  bodies   [][]byte
+}
+
+// MockAssertion represents a common assertion for requests
+type MockAssertion struct {
+  indexes map[string]int    // indexation for key
+  recs    []recordedRequest // request catalog
+}
+----
+
+We have a slice with all the requests that were recorded and an index to look them up. This index consists of a string that combines the request uri and the http method. We can look up the requests with these methods:
+
+----
+// Hits returns the number of hits for a uri and method
+func (m *MockAssertion) Hits(uri, method string) int 
+
+// Headers returns a slice of request headers
+func (m *MockAssertion) Headers(uri, method string) []http.Header
+
+// Body returns request body
+func (m *MockAssertion) Body(uri, method string) [][]byte {
+----
+
+And if needed, we can reset the assertion:
+
+----
+// Reset sets all unexpected properties to their zero value
+func (m *MockAssertion) Reset() error {
+----
+
+Armed with this, checking our outbound requests becomes a very simple task.
+
+First, update the line that creates the mock server, so that we actually pass a recorder:
+
+----
+      ...
+      var record test.MockAssertion
+      mockServer := test.NewMockServer(&record, test.MockServerProcedure{
+      ...
+----
+
+Then, add the following statements at the end of our test function body: 
+
+----
+      // check request was done
+      test.Equals(t, 1, record.Hits(path, http.MethodPost))
+
+      // check request body
+      expBody := fmt.Sprintf(`{"param":%q}`, tc.param)
+      actBody := string(record.Body(path, http.MethodPost)[0])
+      test.Equals(t, expBody, actBody)
+
+      // check request headers
+      expHeaders := []http.Header{{
+        "Authorization": []string{"Basic dXNlcm5hbWU6cGFzc3dvcmQ="},
+        "Content-Type":  []string{"application/json;charset=utf-8"},
+      }}
+      test.Equals(t, expHeaders, record.Headers(path, http.MethodPost))
+----
+
+That's it! We now have tested each and every requirement that was listed above. Congratulations.
+
+I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in the doc folder of https://git.sr.ht/~ewintr/go-kit/[this repository].
+
+If you have comments, please let me know. Contact methods are listed on the /about/[About page].
