@@ -1,10 +1,6 @@
-= My Take on Logging in Golang
+= My Take on logging in go
 Erik Winter <ik@erikwinter.nl>
 2021-04-08
-:kind: tutorial
-:public: yes
-:language: en
-:tags: golang, go-kit
 
 The subject of logging comes up every now and then, in every group of developers. Apparently it is something to be opinionated about, like code formatting. Or to something complain about, like leaving off the cap of the toothpaste. If only there was a `go fmt` for logging. Or toothpaste.
 
