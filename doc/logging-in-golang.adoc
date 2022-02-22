@@ -67,7 +67,7 @@ logger.With(log.Fields{
 
 The last example will be most useful when analyzing the logs, as we can now filter for an exact message (“response received“) and get all the variations of received status codes in one search. Usually, one does not know the exact reason that caused things to fail, that’s why we are analyzing after all. So we do not know the exact status code that we are looking for. Was the other server malfunctioning and did we receive a `500`? Or is our password expired and did we receive a `401`? When logging like the first couple of examples, we can only guess possible causes and try to predict the exact message before we can search for it. With the last approach, we just search for the message and then see what status was returned.
 
-After that, we could either create a count of the different codes (x times `200`, y times `500`, etc) and see how they are distributed, or narrow down the search  to a specific code. See https://erikwinter.nl/articles/2021/simple-log-file-analysis-for-your-kubernetes-pods-on-the-command-line/[this tutorial] for some pointers on how to do some useful quick analyses on the commandline.
+After that, we could either create a count of the different codes (x times `200`, y times `500`, etc) and see how they are distributed, or narrow down the search  to a specific code. See https://ewintr.nl/devnotes/2021/simple-log-file-analysis-for-your-kubernetes-pods-on-the-command-line/[this tutorial] for some pointers on how to do some useful quick analyses on the commandline.
 
 Errors are excellent candidates to put in a field. If the level of the message is error, there should be a field with key "error” present:
 
