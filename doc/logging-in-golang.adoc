@@ -1,4 +1,4 @@
-= My Take on logging in go
+= My take on logging in go
 Erik Winter <ik@erikwinter.nl>
 2021-04-08
 
@@ -141,7 +141,7 @@ Here `log.DefaultTimestampUTC` and `log.DefaultCaller` are functions. With a log
 
 As can be seen in the examples above, when building context it helps to treat a logger as an instance of type Logger and use it it to create new instances, instead of relying on a single logger that is globally present. A natural consequence of this is that a logger should be a parameter that is passed around whenever necessary. At first sight it seems cumbersome and verbose to do that everywhere in your code.
 
-However, it is not necessary to pass the logger to every part of the code, since not every part of the code has the need to log. If we examine a https://erikwinter.nl/notes/2021/my-default-golang-directory-structure/[basic directory structure for Go projects] and look what kind of packages each folder holds:
+However, it is not necessary to pass the logger to every part of the code, since not every part of the code has the need to log. If we examine a https://ewintr.nl/devnotes/2021/depend-less-on-dependencies-with-the-adapter-pattern-in-go/[basic directory structure for Go projects] and look what kind of packages each folder holds:
 
 ----
 .
