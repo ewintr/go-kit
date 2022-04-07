@@ -6,6 +6,13 @@ The subject of logging comes up every now and then, in every group of developers
 
 Anyway, as with most things computing, I like logging to be simple and pragmatic. Over the years, these are the things I’ve come to consider important with this subject.
 
+* #levels[Levels]
+* #structured-logging-and-standard-messages[Structured logging and standard messages]
+* #wrapping-loggers[Wrapping loggers]
+* #advanced-structuring[Advanced structuring]
+* #injecting-loggers-versus-returning-errors[Injecting loggers versus returning errors]
+* #example-implementation[Example implementation]
+
 == Levels
 
 When thinking about what logging levels are appropriate, it helps to define the intended audience for a certain level and what information that audience should get out of it. In addition to that, it also helps to remember what goals and what information are already covered by other systems.
