@@ -154,11 +154,11 @@ func NewMockServer(rec MockRecorder, procedures ...MockServerProcedure) *httptes
 
 	handler = http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-
+			if rec != nil {
+				rec.Record(r)
+			}
 			for _, proc := range procedures {
-
 				if proc.URI == r.URL.RequestURI() && proc.HTTPMethod == r.Method {
-
 					headers := w.Header()
 					for hkey, hvalue := range proc.Response.Headers {
 						headers[hkey] = hvalue
@@ -172,9 +172,6 @@ func NewMockServer(rec MockRecorder, procedures ...MockServerProcedure) *httptes
 					w.WriteHeader(code)
 					w.Write(proc.Response.Body)
 
-					if rec != nil {
-						rec.Record(r)
-					}
 					return
 				}
 			}
