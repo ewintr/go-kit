@@ -17,7 +17,7 @@ To demonstrate this, let's look at a simple generic client for the Foo Cloud Ser
 * #writing-the-tests[Writing the tests]
 * #checking-the-outbound-requests[Checking the outbound requests]
 
-_Note: If you're the type of reader that likes code better than words, skip this explanation and go directly to the `test/doc` folder in https://git.ewintr.nl/go-kit/[this repository] that contains a complete working example of everything discussed below._
+_Note: If you're the type of reader that likes code better than words, skip this explanation and go directly to the `test/doc` folder in https://codeberg.org/ewintr/go-kit[this repository] that contains a complete working example of everything discussed below._
 
 == The Code We Want to Test
 
@@ -207,7 +207,7 @@ func TestFooClientDoStuff(t *testing.T) {
 }
 ----
 
-_Note: the `test.Equals` are part of the small test package in https://git.ewintr.nl/go-kit[this go-kit]. The discussed http mock also belongs to that package and together they form a minimal, but sufficient set of test helpers. But if you prefer, you can of course combine this with populair libraries like https://pkg.go.dev/github.com/stretchr/testify/assert?tab=doc[testify]._
+_Note: the `test.Equals` are part of the small test package in https://codeberg.org/ewintr/go-kit[this go-kit]. The discussed http mock also belongs to that package and together they form a minimal, but sufficient set of test helpers. But if you prefer, you can of course combine this with populair libraries like https://pkg.go.dev/github.com/stretchr/testify/assert?tab=doc[testify]._
 
 We've set up a regular table driven test for calling `FooClient.DoStuff`. In the table we have three test cases. One pretends the external server is down en responds with an error status code. The other two mimick a working external server and test two possible inputs, with `param` `"bar`" and `param` `"baz"`.
 
@@ -221,7 +221,7 @@ Now we come to the interesting part: the recording of our requests. In the code 
 
 The nice thing about interfaces is that you can implement them exactly the way you want for the case at hand. This is especially useful in testing, because different situations ask for different checks. However, the go-kit test package has a straightforward implementation called `MockAssertion` and it turns out that that implementation is already enough for 90% of the cases. You milage may vary, of course.
 
-It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code in `test/httpmock.go` in the mentioned https://git.ewintr.nl/go-kit[go-kit] repository. For now, let's keep it at these observations:
+It would be too much to discuss all details of `MockAssertion` here. If you want, you can inspect the code in `test/httpmock.go` in the mentioned https://codeberg.org/ewintr/go-kit[go-kit] repository. For now, let's keep it at these observations:
 
 ----
 // recordedRequest represents recorded structured information about each request
@@ -290,6 +290,6 @@ Then, add the following statements at the end of our test function body:
 
 That's it! We now have tested each and every requirement that was listed above. Congratulations.
 
-I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in the doc folder of https://git.ewintr.nl/go-kit/[this repository].
+I hope you found this useful. As mentioned above, a complete implementation of `FooClient` that passes all tests can be found in the doc folder of https://codeberg.org/ewintr/go-kit[this repository].
 
 If you have comments, please let me know. Contact methods are listed on the /about/[About page].
