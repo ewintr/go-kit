@@ -8,3 +8,4 @@ This is a collection of some small go packages that were useful enough for me to
 * `test` - Minimalist set of functions for unit testing
 
 The documentation in the `doc` folders can also be read online at [https://ewintr.nl/go-kit](https://ewintr.nl/go-kit)
+
