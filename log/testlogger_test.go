@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"ewintr.nl/go-kit/log"
-	"ewintr.nl/go-kit/test"
+	"code.ewintr.nl/go-kit/log"
+	"code.ewintr.nl/go-kit/test"
 )
 
 func TestTestLogger(t *testing.T) {
