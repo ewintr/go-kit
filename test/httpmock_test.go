@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"testing"
 
-	"code.ewintr.nl/go-kit/test"
+	"go-mod.ewintr.nl/go-kit/test"
 )
 
 func TestHTTPMock(t *testing.T) {

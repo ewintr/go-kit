@@ -1,4 +1,4 @@
-module code.ewintr.nl/go-kit
+module go-mod.ewintr.nl/go-kit
 
 go 1.21.5
 
