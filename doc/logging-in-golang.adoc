@@ -74,7 +74,7 @@ logger.With(log.Fields{
 
 The last example will be most useful when analyzing the logs, as we can now filter for an exact message (“response received“) and get all the variations of received status codes in one search. Usually, one does not know the exact reason that caused things to fail, that’s why we are analyzing after all. So we do not know the exact status code that we are looking for. Was the other server malfunctioning and did we receive a `500`? Or is our password expired and did we receive a `401`? When logging like the first couple of examples, we can only guess possible causes and try to predict the exact message before we can search for it. With the last approach, we just search for the message and then see what status was returned.
 
-After that, we could either create a count of the different codes (x times `200`, y times `500`, etc) and see how they are distributed, or narrow down the search  to a specific code. See https://ewintr.nl/devnotes/2021/simple-log-file-analysis-for-your-kubernetes-pods-on-the-command-line/[this tutorial] for some pointers on how to do some useful quick analyses on the commandline.
+After that, we could either create a count of the different codes (x times `200`, y times `500`, etc) and see how they are distributed, or narrow down the search  to a specific code. See https://ewintr.nl/simple-log-file-analysis-for-your-kubernetes-pods-on-the-command-line/[this tutorial] for some pointers on how to do some useful quick analyses on the commandline.
 
 Errors are excellent candidates to put in a field. If the level of the message is error, there should be a field with key "error” present:
 
@@ -148,7 +148,7 @@ Here `log.DefaultTimestampUTC` and `log.DefaultCaller` are functions. With a log
 
 As can be seen in the examples above, when building context it helps to treat a logger as an instance of type Logger and use it it to create new instances, instead of relying on a single logger that is globally present. A natural consequence of this is that a logger should be a parameter that is passed around whenever necessary. At first sight it seems cumbersome and verbose to do that everywhere in your code.
 
-However, it is not necessary to pass the logger to every part of the code, since not every part of the code has the need to log. If we examine a https://ewintr.nl/devnotes/2021/depend-less-on-dependencies-with-the-adapter-pattern-in-go/[basic directory structure for Go projects] and look what kind of packages each folder holds:
+However, it is not necessary to pass the logger to every part of the code, since not every part of the code has the need to log. If we examine a basic directory structure for Go projects and look what kind of packages each folder holds:
 
 ----
 .
@@ -159,8 +159,8 @@ However, it is not necessary to pass the logger to every part of the code, since
 
 Then we see that every action is initiated somewhere in `/cmd` and that the packages in `/internal` and `/pkg` are supposed to be decoupled from the rest. We can get by with the rule of thumb that the logging should be done in `/cmd` and that the packages in `/internal` and in `/pkg` should return errors that may or may not get wrapped and may or may not get logged when they arrive in `/cmd`. 
 
-Ever had some external library messing up things because they decided just to log to Stdout the way they saw fit? Not very helpful. If you https://erikwinter.nl/articles/2021/depend-less-on-dependencies-with-the-adapter-pattern-in-golang/[wrap external dependencies in an adapter], you can make sure that the errors also translate properly to the domain of your program. If a library really insists on having a logger and you still want to use it anyway, this is the place to add context.
+Ever had some external library messing up things because they decided just to log to Stdout the way they saw fit? Not very helpful. If you https://ewintr.nl/depend-less-on-dependencies-with-the-adapter-pattern-in-go/[wrap external dependencies in an adapter], you can make sure that the errors also translate properly to the domain of your program. If a library really insists on having a logger and you still want to use it anyway, this is the place to add context.
 
 == Example implementation
 
-An example of how you can adapt a regular logging library to these practices is the `log` package in my https://codeberg.org/ewintr/go-kit[small personal go kit repository]. There is an interface definition in `log.go`, together with two implementations, one for https://github.com/Sirupsen/logrus[Logrus] and one for the https://gokit.io/[gokit.io] `log` package, and an implemention suitable for use in testing.
+An example of how you can adapt a regular logging library to these practices is the `log` package in my https://forgejo.ewintr.nl/ewintr/go-kit[small personal go kit repository]. There is an interface definition in `log.go`, together with two implementations, one for https://github.com/Sirupsen/logrus[Logrus] and one for the https://gokit.io/[gokit.io] `log` package, and an implemention suitable for use in testing.
